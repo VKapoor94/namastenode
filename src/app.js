@@ -1,27 +1,37 @@
-const express = require('express')
+const express = require('express');
+const { auth } = require('./middlewares/auth');
 const app =express();
 
 app.listen(3000,()=>{
     console.log("listening at 3000")
 })
 
-app.use('/user',[(req,res,next)=>{
-   console.log("Handling user 1")
-    next()
-   // res.send("send 1")
-    
-},(req,res,next)=>{
-    console.log("Handling user 2")
-    //res.send("send 2")
-    next()
-},
-(req,res,next)=>{
-    console.log("Handling user 2")
-    //res.send("send 3")
-    next()
-},
-(req,res)=>{
-    console.log("Handling user 2")
-    res.send("send 4")
-}])
 
+app.use('/admin',(req,res,next)=>{
+    let token ="xyzww"
+    if(!token=="xyz"){
+        res.status(401).send("unauthorized")  
+    }
+    else{
+        next()
+       }
+   
+})
+
+app.get('/admin/getData',auth,(req,res)=>{
+    //logic of fetching all dd
+    res.send("admin")
+
+})
+
+app.get('/admin/deleteUser',(req,res)=>{
+    //logic of fetching all dd
+    res.send("admin delete")
+})
+
+
+app.use('/user',[(req,res,next)=>{
+    console.log("Handling user 1")
+     res.send("send 1")
+     
+ }])
