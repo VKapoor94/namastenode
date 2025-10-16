@@ -4,17 +4,13 @@ const {connectDB} = require('./config/database');
 const { userModel } = require('./models/users');
 const app =express();
 
+app.use(express.json())
 app.listen(3000,()=>{
     console.log("listening at 3000")
 })
 
 app.post('/signup',async(req,res)=>{
-    const user ={
-        firstName:'Vineet',
-        lastName:'Kapoor',
-        emailId:'kapoor@zycus.com',
-        password:'vineet@123',
-    }
+    const user =req.body;
     console.log("Hello")
     const userM = new userModel(user)
     try{
