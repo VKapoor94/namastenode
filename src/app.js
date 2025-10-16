@@ -1,37 +1,35 @@
 const express = require('express');
 const { auth } = require('./middlewares/auth');
+const {connectDB} = require('./config/database');
+const { userModel } = require('./models/users');
 const app =express();
 
 app.listen(3000,()=>{
     console.log("listening at 3000")
 })
 
-
-app.use('/admin',(req,res,next)=>{
-    let token ="xyzww"
-    if(!token=="xyz"){
-        res.status(401).send("unauthorized")  
+app.post('/signup',async(req,res)=>{
+    const user ={
+        firstName:'Vineet',
+        lastName:'Kapoor',
+        emailId:'kapoor@zycus.com',
+        password:'vineet@123',
     }
-    else{
-        next()
-       }
-   
+    console.log("Hello")
+    const userM = new userModel(user)
+    try{
+        await userM.save()
+    }catch(err){
+        res.status(400).send("error",err.message)
+    }
+    res.send("Done")
+})
+connectDB().then(()=>{
+    console.log("Successfull")
+}).catch(()=>{
+    console.error("Error")
 })
 
-app.get('/admin/getData',auth,(req,res)=>{
-    //logic of fetching all dd
-    res.send("admin")
-
-})
-
-app.get('/admin/deleteUser',(req,res)=>{
-    //logic of fetching all dd
-    res.send("admin delete")
-})
 
 
-app.use('/user',[(req,res,next)=>{
-    console.log("Handling user 1")
-     res.send("send 1")
-     
- }])
+
