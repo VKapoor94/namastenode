@@ -55,3 +55,30 @@ requestRouter.post("/request/send/:status/:toUserId", auth, async (req, res) => 
 
 })
 
+requestRouter.post("/request/review/:status/:requestId", auth, async (req, res) => {
+   try{
+    const loggedInUser =req.user;
+    const requestId =req.params.requestId;
+    const status = req.params.status;
+     const ALLOWED_STATUS = ["accepted","rejected"]
+        if(!ALLOWED_STATUS.includes(status)){
+            return res.status(400).send({
+                message:'invalid status value'+status
+            })
+        }
+
+        const toUser = await connectionRequestModel.findById({_id:requestId,toUserId:loggedInUser._id,status:'interested'});
+        if(!toUser){
+            return res.status(400).send("User not preent")
+        }
+        toUser.status = status;
+      const data =  await toUser.save()
+      res.send({message:"Connection request "+status})
+ 
+   }catch(err){
+    res.status(400).send("Error")
+   }
+   
+})
+
+
